@@ -16,15 +16,21 @@ public class TaskManager {
             printMenu();
             String[][] tasks = loadTasks();
             String[][] newTasks = addTask(tasks);
-            for (String[] task : newTasks) {
-                System.out.println(Arrays.toString(task));
-            }
+            listTasks(newTasks);
         }catch (IOException e){ e.getMessage();}
     }
 
 
+    public static void listTasks(String[][] tasks){
+       System.out.println("list");
+        for(int i = 0; i < tasks.length; i++){
+            System.out.println(i + " : "+ tasks[i][0] + " " + tasks[i][1] + " " + tasks[i][2]);
+        }
+    }
+
     public static String[][] addTask(String[][] tasks){
         // Collect data from the user
+        System.out.println("add");
         Scanner scanner = new Scanner(System.in);
         System.out.println("Please add a task description:");
         String taskDescription = scanner.nextLine();
@@ -52,9 +58,9 @@ public class TaskManager {
                 System.out.println("Removing a task...");
                // romeveTask();
                 break;
-            case "edit":
-                System.out.println("Editing a task...");
-                //editTask();
+            case "list":
+                System.out.println("Listing a task...");
+                //listTasks();
                 break;
             case "exit":
                 System.out.println("Exiting the program.");
