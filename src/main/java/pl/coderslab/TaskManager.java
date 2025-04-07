@@ -1,6 +1,8 @@
 package pl.coderslab;
 
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,9 +19,26 @@ public class TaskManager {
             String[][] tasks = loadTasks();
             String[][] newTasks = addTask(tasks);
             listTasks(newTasks);
+            String[][] removedTasks = removeTask(newTasks);
+            listTasks(removedTasks);
         }catch (IOException e){ e.getMessage();}
     }
 
+    public static String[][] removeTask(String[][] copyOfTasksArray){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("remove");
+        System.out.println("Please select number to remove");
+        if (scanner.hasNextInt()) {
+            int numberOfTask = scanner.nextInt();
+            String[][] arrayWIthDeletedTask = ArrayUtils.remove(copyOfTasksArray, numberOfTask);
+            copyOfTasksArray = null;
+            System.out.println("Value was saccessfully deleted.");
+
+            return arrayWIthDeletedTask;
+        }
+
+       return copyOfTasksArray;
+    }
 
     public static void listTasks(String[][] tasks){
        System.out.println("list");
