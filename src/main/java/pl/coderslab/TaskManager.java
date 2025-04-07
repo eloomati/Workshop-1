@@ -21,23 +21,31 @@ public class TaskManager {
             listTasks(newTasks);
             String[][] removedTasks = removeTask(newTasks);
             listTasks(removedTasks);
-        }catch (IOException e){ e.getMessage();}
+        }catch (IOException e){
+            System.out.println(e.getMessage());}
     }
 
-    public static String[][] removeTask(String[][] copyOfTasksArray){
+    public static String[][] removeTask(String[][] copyOfTasksArray) throws IOException {
         Scanner scanner = new Scanner(System.in);
         System.out.println("remove");
         System.out.println("Please select number to remove");
-        if (scanner.hasNextInt()) {
-            int numberOfTask = scanner.nextInt();
-            String[][] arrayWIthDeletedTask = ArrayUtils.remove(copyOfTasksArray, numberOfTask);
-            copyOfTasksArray = null;
-            System.out.println("Value was saccessfully deleted.");
 
-            return arrayWIthDeletedTask;
+        while (true) {
+            if (scanner.hasNextInt()) {
+                int numberOfTask = scanner.nextInt();
+                if (numberOfTask >= 0 && numberOfTask < copyOfTasksArray.length) {
+                    String[][] arrayWithDeletedTask = ArrayUtils.remove(copyOfTasksArray, numberOfTask);
+                    copyOfTasksArray = null; // Zwolnienie pamięci
+                    System.out.println("Value was successfully deleted.");
+                    return arrayWithDeletedTask;
+                } else {
+                    System.out.println("Incorrect argument pass. Please give a number greater or equal 0 in range of tasks.");
+                }
+            } else {
+                System.out.println("Incorrect argument pass. Please give a number.");
+                scanner.next(); // Konsumowanie niepoprawnego wejścia
+            }
         }
-
-       return copyOfTasksArray;
     }
 
     public static void listTasks(String[][] tasks){
