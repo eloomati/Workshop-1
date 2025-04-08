@@ -2,8 +2,12 @@ package pl.coderslab;
 
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -12,6 +16,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class TaskManager {
+    static String FILENAME = "tasks.csv";
     static String[][] tasks;
 
     public static void main(String[] args) {
@@ -25,7 +30,38 @@ public class TaskManager {
         }
     }
 
+    /**
+     * Exits the program and saves the tasks to a file.
+     */
+    public static void exit( ){
+        try {
+            saveToFile();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println(ConsoleColors.RED + "Bye, bye.");
+        System.exit(0);
+    }
 
+    /**
+     * Saves the tasks to a CSV file.
+     *
+     * @throws IOException If an error occurs while writing to the file.
+     */
+    public static void saveToFile() throws IOException {
+        StringBuilder csvData = new StringBuilder();
+
+        for(String[] task: tasks){
+            csvData.append(StringUtils.join(task, ",")).append("\n");
+        }
+        try {
+            FileUtils.writeStringToFile(new File(FILENAME), csvData.toString(),
+                    StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            System.out.println("There is some problems with file to save: " +
+                    e.getMessage());
+        }
+    }
 
     /**
      * Removes a task from the tasks array.
@@ -43,6 +79,7 @@ public class TaskManager {
                 if (numberOfTask >= 0 && numberOfTask < tasks.length) {
                     tasks = ArrayUtils.remove(tasks, numberOfTask);
                     System.out.println("Value was successfully deleted.");
+                    printMenu();
                     break;
                 } else {
                     System.out.println(numberOfTask + "\nIncorrect argument pass. Please give a number greater or equal 0 in range of tasks.");
@@ -62,6 +99,7 @@ public class TaskManager {
         for (int i = 0; i < tasks.length; i++) {
             System.out.println(i + " : " + tasks[i][0] + " " + tasks[i][1] + " " + tasks[i][2]);
         }
+        printMenu();
     }
 
     /**
@@ -83,8 +121,12 @@ public class TaskManager {
         tasks[tasks.length - 1] = new String[]{taskDescription, taskDueDate, taskImportant};
 
         System.out.println("Task added successfully.");
+        printMenu();
     }
 
+    /**
+     * Prompts the user for a decision and executes the corresponding action.
+     */
     public static void getUserDecision() {
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
@@ -105,7 +147,7 @@ public class TaskManager {
                     listTasks();
                     break;
                 case "exit":
-                    System.out.println("Exiting the program.");
+                    exit();
                     break;
                 default:
                     System.out.println("Please select a correct option.");
@@ -122,7 +164,7 @@ public class TaskManager {
      * @throws IOException If an error occurs while reading the file.
      */
     public static String[][] loadTasks() throws IOException {
-        Path path = Paths.get("tasks.csv");
+        Path path = Paths.get(FILENAME);
         List<String[]> taskList = new ArrayList<>();
 
         try {
